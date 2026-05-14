@@ -5,24 +5,6 @@
 #import "@preview/numbly:0.1.0": numbly
 #import "utils.typ": *
 
-// Pdfpc configuration
-// typst query --root . ./example.typ --field value --one "<pdfpc-file>" > ./example.pdfpc
-#let pdfpc-config = pdfpc.config(
-    duration-minutes: 30,
-    start-time: datetime(hour: 14, minute: 10, second: 0),
-    end-time: datetime(hour: 14, minute: 40, second: 0),
-    last-minutes: 5,
-    note-font-size: 12,
-    disable-markdown: false,
-    default-transition: (
-      type: "push",
-      duration-seconds: 2,
-      angle: ltr,
-      alignment: "vertical",
-      direction: "inward",
-    ),
-  )
-
 // Theorems configuration by ctheorems
 #show: thmrules.with(qed-symbol: $square$)
 #let theorem = thmbox("theorem", "Theorem", fill: rgb("#eeffee"))
@@ -41,21 +23,22 @@
   footer: self => self.info.institution,
   config-common(
     // handout: true,
-    preamble: pdfpc-config,
     show-bibliography-as-footnote: bibliography(title: none, "bibliography.bib"),
   ),
   config-info(
-    title: [Presentation Title],
-    subtitle: [Subtitle],
+    title: [ScalaTropy: Multiparty Coordination with Monadic Communication Primitives],
+    // subtitle: [Subtitle],
     author: author_list(
       (
         (first_author("Nicolas Farabegoli"), "nicolas.farabegoli@unibo.it"),
-        ("Foo Bar", "foo@bar.com"),
+        ("Luca Tassinari", "luca.tassinari10@studio.unibo.it"),
+        ("Gianluca Aguzzi", "gianluca.aguzzi@unibo.it"),
+        ("Mirko Viroli", "mirko.viroli@unibo.it")
       )
     ),
     date: datetime.today().display("[day] [month repr:long] [year]"),
     institution: [University of Bologna],
-    logo: align(right)[#image("images/disi.svg", width: 55%)],
+    // logo: align(right)[#image("images/disi.svg", width: 55%)],
   ),
 )
 
