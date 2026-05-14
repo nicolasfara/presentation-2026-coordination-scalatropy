@@ -65,94 +65,55 @@
 
 // #components.adaptive-columns(outline(title: none, indent: 1em))
 
-= Animation
+= Choreography & Multitier
 
-== Simple Animation
+== A Globa Perspective
 
-#pdfpc.speaker-note("This is a note that only the speaker will see.")
+== Choreography & Multitier
 
-// #set text(font: "Fira Sans", weight: 350, size: 20pt)
-// #show math.equation: set text(font: "Fira Math")
-// #set strong(delta: 200)
-// #set par(justify: true)
+- What they share
+- Pros/cons of each one
 
-// #set quote(block: true)
-// #show quote: set align(left)
-// #show quote: set pad(x: 2em, y: -0.8em)
+== What is missing?
 
-// #set raw(tab-size: 4)
-// #show raw.where(block: true): block.with(
-//   fill: luma(240),
-//   inset: 1em,
-//   radius: 0.7em,
-//   width: 100%,
-// )
+- Motivate the lack of choreography
+- Motivate the lack of multitier
 
-// #show bibliography: set text(size: 0.8em)
-// #show footnote.entry: it => {
-//   block(inset: (x: 2em, y: 0.1em))[#text(size: 0.75em)[#it.note.body]]
-// }
+= ScalaTropy
 
-// #let fcite(clabel) = {
-//   footnote(cite(form: "full", label(clabel)))
-// }
+== What try to solve?
 
-// #let author = block(inset: 0.1em)[
-//   #table(inset: 0.5em, stroke: none, columns: (auto, 4fr),  align: (left, left),
-//     [#alert[*Author 1*]], [`author1@mail.com`],
-//     [Author 2], [`author2@mail.com`],
-//     [Author 3], [`author3@mail.com`],
-//   )
-//   #place(right, dy:-1.5em)[
-//     #figure(image("images/disi.svg", width:40%))
-//   ]
-// ]
+- What try to solve?
+- Which is the idea behind it?
 
-// #title-slide(
-//   title: "Slide Title",
-//   subtitle: "Subtitle",
-//   author: author,
-//   // date: datetime.today().display("[day] [month repr:long] [year]"),
-// )
+== Characterizing elements
 
-// #new-section-slide("Slide section 1")
+- Communication patter
+- Tagless-final encoding
+- What steal from choreo and multitier
 
-== Slide
-*Bold* and _italic_ text.
+== The Architecture
 
-This is a citation #cite(label("DBLP:journals/fgcs/FarabegoliPCV24")).
-This another citation #cite(label("DBLP:journals/iot/FarabegoliPCV24"))
+- Architecture at the type-level
 
-#alert[This is an alert.]
+== Placement Types
 
-== Code slide
+- How are modeled in ScalaTropy
 
-```kotlin
-fun main() {
-    println("Hello, world!")
-    for (i in 0..9) {
-        println(i)
-    }
-    println("Goodbye, world!")
-}
-```
+== Language API Tour
 
-== Title and subtitle slide
+- Introduce the DSL
+- Showcase simple code snippets
 
-=== This is a subtitle
+= ScalaTropy in Practice
 
-#lorem(24)
+== Reduces message exchange
 
-=== This is a subtitle
+== Security
 
-#lorem(34)
+== Expressiveness
 
-== FontAwesome icons
-
-=== Icon in a title #fa-java()
-
-#fa-icon("github") -- Github icon \
-#fa-icon("github", fill: blue) -- Github icon blue fill
+= Future Work
 
 // #slide[
 //   #bibliography("bibliography.bib")
