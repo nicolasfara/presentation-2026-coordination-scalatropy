@@ -77,7 +77,7 @@ jobs:
 
       - name: Build HTML File
         if: github.ref_name == 'master'
-        run: touying compile presenation-2026-coordination-scalatropy.typ --output build/index.html --format html --font-paths fonts
+        run: touying compile presentation-2026-coordination-scalatropy.typ --output build/index.html --format html --font-paths fonts
 
       - name: Deploy to GitHub Pages
         if: github.ref_name == 'master'
