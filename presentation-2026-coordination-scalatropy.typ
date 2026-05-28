@@ -151,32 +151,6 @@
   )
 ]
 
-= Communication Shapes
-
-== Four Patterns, One Vocabulary
-
-#components.side-by-side(columns: (1fr, 1fr, 1fr, 1fr), gutter: .55em)[
-  #align(center)[#image("images/point-to-point.svg", width: 78%)]
-  #align(center)[#chip[point-to-point]]
-  #text(size: .67em)[one sender, one receiver]
-][
-  #align(center)[#image("images/isotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[isotropic]]
-  #text(size: .67em)[same payload to many receivers]
-][
-  #align(center)[#image("images/anisotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[anisotropic]]
-  #text(size: .67em)[tailored payloads to many receivers]
-][
-  #align(center)[#image("images/coanisotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[co-anisotropic]]
-  #text(size: .67em)[many tailored payloads to one receiver]
-]
-
-#v(.6em)
-#statement[
-  ScalaTropy turns these shapes into first-class primitives, rather than asking the programmer to simulate them.
-]
 
 == What Existing DSLs Give Us
 
@@ -414,7 +388,7 @@ yield ()
 
 == The Language Surface: Placed Computation
 
-#text(weight: "medium")[Placed computation]
+=== Placed computation
 
 ```scala
 // Evaluates the `body` expression in the context of the peer P.
@@ -430,64 +404,112 @@ def take[P <: Peer, V](value: V on P)(using Label[P]): F[V]
   row-gutter: .45em,
   stroke: none,
   align: (right + horizon, left + horizon),
-  [#chip[`on`]],
+  [#chip[```scala on```]],
   [Evaluates an expression on the peer `P` is local, producing a value typed as living at `P`.],
-  [#chip[`take`]],
+  [#chip[```scala take```]],
   [Uses evidence that the current peer is the local peer `P` to access the local value inside `V on P`.],
 )
 
 == The Language Surface: Communication
 
-#text(weight: "medium")[Communication]
+=== Communication
 
+#codly(
+  highlights: (
+    (line: 2, start: 18, end: 31, fill: blue),
+    (line: 2, start: 44, end: 57, fill: blue),
+    (line: 6, start: 27, end: 42, fill: blue),
+    (line: 6, start: 55, end: 68, fill: blue),
+    (line: 10, start: 29, end: 44, fill: blue),
+    (line: 10, start: 57, end: 70, fill: blue),
+    (line: 14, start: 31, end: 44, fill: blue),
+    (line: 14, start: 57, end: 72, fill: blue),
+  )
+)
 ```scala
 // Point-to-point communication
-def comm[S, R, V](value: V on S): F[V on R]
+def comm[From <: TiedWithSingle[To], To <: TiedWithSingle[From], V](
+  value: V on From
+): F[V on To]
 // Fan-out communication
-def isotropicComm[S, R, V](value: V on S): F[V on R]
+def isotropicComm[From <: TiedWithMultiple[To], To <: TiedWithSingle[From], V](
+  value: V on From
+): F[V on To]
 // Fan-out with per-peer overrides
-def anisotropicComm[S, R, V](value: Anisotropic[R, V] on S): F[V on R]
+def anisotropicComm[From <: TiedWithMultiple[To], To <: TiedWithSingle[From], V](
+  value: Anisotropic[To, V] on From
+): F[V on To]
 // Fan-in communication
-def coAnisotropicComm[S, R, V](value: V on S): F[Anisotropic[S, V] on R]
+def coAnisotropicComm[From <: TiedWithSingle[To], To <: TiedWithMultiple[From], V](
+  value: V on From
+): F[Anisotropic[From, V] on To]
 ```
+
+#components.side-by-side(columns: (1fr, 1fr, 1fr, 1fr), gutter: .55em)[
+  #align(center)[#image("images/point-to-point.svg", width: 78%)]
+  #align(center)[#chip[point-to-point]]
+  #text(size: .67em)[Classic point-to-point with one sender, one receiver]
+][
+  #align(center)[#image("images/isotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[isotropic]]
+  #text(size: .67em)[same payload to many receivers]
+][
+  #align(center)[#image("images/anisotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[anisotropic]]
+  #text(size: .67em)[tailored payloads to many receivers]
+][
+  #align(center)[#image("images/coanisotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[co-anisotropic]]
+  #text(size: .67em)[many tailored payloads to one receiver]
+]
 
 #statement(fill: green.lighten(88%), stroke: green)[
   The signatures carry both placement and architectural intent.
 ]
 
-== Why Monads?
+== Tagless-final Encoding
 
-#slide(composer: (.95fr, 1.05fr))[
-  #mini-card([Same program], [
-    Programs are written against `MultiParty[F]`.
-  ], color: blue)
+=== Effect-polymorphic interpretation
 
-  #mini-card([Different effects], [
-    `F` can be a production `IO`, an in-memory test effect, or another effect stack.
-  ], color: orange)
+```scala
+trait MultiParty[F[_]: Monad]:
+  def on[P <: Peer, V](...): F[V on P]
+  def comm[S, R, V](value: V on S): F[V on R]
+  // ...
 
-  #mini-card([Composable runtime], [
-    The interpreter delegates to `Network` and `Environment` capabilities.
-  ], color: green)
-][
-  ```scala
-  trait MultiParty[F[_]: Monad]:
-    def on[P <: Peer, V](...): F[V on P]
-    def comm[S, R, V](value: V on S): F[V on R]
-    // ...
+trait Network[F[_], LP <: Peer]:
+  def send[V, To <: Peer](...): F[Unit]
+  def receive[V, From <: Peer](...): F[V]
+  def alivePeersOf[P <: Peer]: F[NonEmptyList[Address[P]]]
 
-  trait Network[F[_], LP <: Peer]:
-    def send[V, To <: Peer](...): F[Unit]
-    def receive[V, From <: Peer](...): F[V]
-    def alivePeersOf[P <: Peer]: F[NonEmptyList[Address[P]]]
-  ```
-]
+trait Environment[F[_], LP <: Peer]:
+  def self: F[Address[LP]]
+  def local[P <: Peer, V](body: Label[P] ?=> F[V]): F[V]
+```
+
+#pagebreak()
+
+#table(
+  columns: (auto, 1fr),
+  column-gutter: .8em,
+  row-gutter: .45em,
+  stroke: none,
+  align: (right + horizon, left + horizon),
+  [#chip[```scala MultiParty[F]```]],
+  [Defines programs once, abstracting over the effect that will interpret distributed computation.],
+  [#chip[```scala F[_]```]],
+  [Can be production `IO`, an in-memory test effect, or another monadic stack.],
+  [#chip[```scala Network```]],
+  [Provides the concrete transport operations: send, receive, and discover reachable peers.],
+  [#chip[```scala Environment```]],
+  [Provides the local peer context used to run placed computations at the current location.],
+)
 
 = ScalaTropy in Practice
 
 == Case Study: Master-Worker
 
-#slide(composer: (.95fr, 1.05fr))[
+#slide(composer: (.70fr, 1.30fr))[
   #mini-card([Architecture], [
     `Master` is tied to multiple `Worker`s; every `Worker` is tied to one `Master`.
   ], color: blue)
@@ -500,41 +522,56 @@ def coAnisotropicComm[S, R, V](value: V on S): F[Anisotropic[S, V] on R]
     `coAnisotropicComm` collects partial results and acts as a barrier.
   ], color: green)
 ][
+  #codly(
+    highlights: (
+      (line: 1, start: 0, end: none, fill: blue),
+      (line: 2, start: 0, end: none, fill: blue),
+      (line: 10, start: 20, end: none, fill: orange),
+      (line: 12, start: 21, end: none, fill: orange),
+      (line: 15, start: 16, end: none, fill: green),
+    )
+  )
   ```scala
-  for
-    tasks <- on[Master]:
-      for
-        peers <- reachablePeers[Worker]
-        allocation = peers.map(_ -> Task(...)).toMap
-        message <- anisotropicMessage(allocation, Task(0))
-      yield message
-    taskOnWorker <- anisotropicComm[Master, Worker](tasks)
-    partial <- on[Worker] { take(taskOnWorker).map(_.compute) }
-    results <- coAnisotropicComm[Worker, Master](partial)
-    total <- on[Master] { takeAll(results).map(_.values.sum) }
-  yield total
+  type Master <: { type Tie <: Multiple[Worker] }
+  type Worker <: { type Tie <: Single[Master] }
+
+  def masterWorker[F[_]: MonadThrow](using MultiParty[F]) =
+    for
+      tasks <- on[Master]:
+        for
+          peers <- reachablePeers[Worker]
+          alloc = peers.map(_ -> Task(...)).toMap
+          message <- anisotropicMessage(alloc, Task(0))
+        yield message
+      taskOnWorker <- anisotropicComm[Master, Worker](tasks)
+      partial <- on[Worker]:
+        take(taskOnWorker).map(_.compute)
+      results <- coAnisotropicComm[Worker, Master](partial)
+      total <- on[Master]:
+        takeAll(results).map(_.values.sum)
+    yield total
   ```
 ]
 
-== Case Study: Replicated Key-Value Store
+// == Case Study: Replicated Key-Value Store
 
-#slide(composer: (1fr, 1fr))[
-  #placeholder(
-    [Key-value store architecture],
-    body: [Clients, primary replica, backup replicas]
-  )
-][
-  - Clients send requests to the primary with `coAnisotropicComm`.
-  - The primary processes requests and builds per-client responses.
-  - `Put` requests are replicated to backups with `isotropicComm`.
-  - Backup acknowledgments flow back with `coAnisotropicComm`.
-  - Responses return with `anisotropicComm`.
+// #slide(composer: (1fr, 1fr))[
+//   #placeholder(
+//     [Key-value store architecture],
+//     body: [Clients, primary replica, backup replicas]
+//   )
+// ][
+//   - Clients send requests to the primary with `coAnisotropicComm`.
+//   - The primary processes requests and builds per-client responses.
+//   - `Put` requests are replicated to backups with `isotropicComm`.
+//   - Backup acknowledgments flow back with `coAnisotropicComm`.
+//   - Responses return with `anisotropicComm`.
 
-  #v(.4em)
-  #statement(fill: soft)[
-    The same choreography works with any number of backup replicas.
-  ]
-]
+//   #v(.4em)
+//   #statement(fill: soft)[
+//     The same choreography works with any number of backup replicas.
+//   ]
+// ]
 
 == What Selective Communication Buys
 
@@ -544,11 +581,11 @@ def coAnisotropicComm[S, R, V](value: V on S): F[Anisotropic[S, V] on R]
   ], color: green)
 ][
   #mini-card([Confidentiality], [
-    Peers do not receive data that was never intended for them.
+    Peers do not receive data that was never intended for them. Checked at compile-time.
   ], color: blue)
 ][
   #mini-card([Expressiveness], [
-    The code says scatter, broadcast, or gather directly.
+    The code make explicit which communication patter is used and which peers are involved. 
   ], color: orange)
 ]
 
