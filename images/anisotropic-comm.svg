@@ -7,7 +7,7 @@
    viewBox="0 0 39.687499 26.458333"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
    sodipodi:docname="anisotropic-comm.svg"
    inkscape:export-filename="anisotropic-comm.pdf"
    inkscape:export-xdpi="96"
@@ -27,10 +27,10 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="7.5223784"
-     inkscape:cx="54.304633"
-     inkscape:cy="40.944497"
-     inkscape:window-width="2259"
-     inkscape:window-height="1193"
+     inkscape:cx="54.371102"
+     inkscape:cy="40.878029"
+     inkscape:window-width="3440"
+     inkscape:window-height="1358"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -141,7 +141,9 @@
              id="tspan1"
              style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c575f;fill-opacity:1;stroke:none;stroke-width:0.265"
              x="19.132357"
-             y="6.770988">$m_1$</tspan></text>
+             y="6.770988">m<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan2">1</tspan></tspan></text>
         <text
            xml:space="preserve"
            style="font-size:4.9389px;line-height:1;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#2c575f;stroke:#23373b;stroke-width:0.264999;stroke-linejoin:round"
@@ -152,7 +154,9 @@
              id="tspan1-6"
              style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c575f;fill-opacity:1;stroke:none;stroke-width:0.265"
              x="20.190691"
-             y="12.612494">$m_2$</tspan></text>
+             y="12.612494">m<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan3">2</tspan></tspan></text>
         <text
            xml:space="preserve"
            style="font-size:4.9389px;line-height:1;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#2c575f;stroke:#23373b;stroke-width:0.264999;stroke-linejoin:round"
@@ -163,7 +167,9 @@
              id="tspan1-6-7"
              style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c575f;fill-opacity:1;stroke:none;stroke-width:0.265"
              x="17.872396"
-             y="21.019291">$m_i$</tspan></text>
+             y="21.019291">m<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan4">i</tspan></tspan></text>
       </g>
     </g>
     <g

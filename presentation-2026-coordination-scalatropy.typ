@@ -4,6 +4,7 @@
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/numbly:0.1.0": numbly
 #import "@preview/codly:1.3.0": *
+#import "@preview/tiaoma:0.3.0"
 #import "utils.typ": *
 
 #show: codly-init.with()
@@ -72,87 +73,85 @@
 
 #title-slide()
 
-= The Problem
+= Multiparty Languages
 
-== A Distributed Program Has Two Stories
+== Choreographic and Multitier Programming
 
-#components.side-by-side(columns: (1fr, 1fr), gutter: 1.1em)[
-  #mini-card([Global coordination], [
-    Choreographic programming lets us write the conversation once:
-    who talks to whom, and in what order.
-  ], color: blue)
+They share the goal of *describing distributed systems as a whole*, rather than as separate programs for each participant.
 
-  #v(.6em)
+#components.side-by-side(columns: (1fr, 1fr), gutter: 1.5em)[
+  === Choreographic programming
 
-  #mini-card([The payoff], [
-    A compact, third-person specification of distributed behavior.
-  ], color: green)
+  - *Protocols definition* involving multiple participants; proved deadlock-free.
+  - *Explicit communication* as first-class primitives in the language.
 ][
-  #mini-card([Deployment architecture], [
-    Multitier programming makes placements and allowed ties explicit:
-    where values live and which peers may communicate.
-  ], color: orange)
+  === Multitier programming
 
-  #v(.6em)
-
-  #mini-card([The payoff], [
-    Static discipline over runtime topology and communication boundaries.
-  ], color: green)
+  - *Placement discipline* for values and computations across tiers.
+  - *Implicit communication* through cross-tier operators.
+]
+#v(1em)
+#statement(fill: green.lighten(85%))[
+  Can we take the #underline[best of both worlds] and have a single multiparty language for distributed systems with *explicit communication* and *architectural constraints*?
 ]
 
-#v(.5em)
-#statement[
-  The two stories are complementary, but today developers often have to choose which one is first-class.
-]
 
-== The Catch
+// == The Catch
 
-#components.side-by-side(columns: (1fr, 1fr), gutter: 1em)[
-  #text(weight: "medium", fill: blue)[Choreographic DSLs]
+// #components.side-by-side(columns: (1fr, 1fr), gutter: 1em)[
+//   #text(weight: "medium", fill: blue)[Choreographic DSLs]
 
-  - Excellent global view
-  - Strong foundations for coordination
-  - Usually centered on point-to-point communication
-  - Selective multicast can become manual plumbing
-][
-  #text(weight: "medium", fill: orange)[Multitier DSLs]
+//   - Excellent global view
+//   - Strong foundations for coordination
+//   - Usually centered on point-to-point communication
+//   - Selective multicast can become manual plumbing
+// ][
+//   #text(weight: "medium", fill: orange)[Multitier DSLs]
 
-  - Explicit placement discipline
-  - Architecture encoded in types
-  - Communication is often implicit through placed values
-  - Selective intent can be hidden in lower-level boilerplate
-]
+//   - Explicit placement discipline
+//   - Architecture encoded in types
+//   - Communication is often implicit through placed values
+//   - Selective intent can be hidden in lower-level boilerplate
+// ]
 
-#v(.4em)
-#statement(fill: orange.lighten(90%))[
-  The missing piece is not another send primitive. It is communication intent, checked against architecture.
-]
+// #v(.4em)
+// #statement(fill: orange.lighten(90%))[
+//   The missing piece is not another send primitive. It is communication intent, checked against architecture.
+// ]
 
-== A Tiny Example of Waste
+// == A Tiny Example of Waste
 
-#slide(composer: (1.08fr, .92fr))[
-  #text(weight: "medium")[Matrix-vector product]
+// #slide(composer: (1.08fr, .92fr))[
+//   #text(weight: "medium")[Matrix-vector product]
 
-  A master owns a matrix. Workers should receive different row blocks.
+//   A master owns a matrix. Workers should receive different row blocks.
 
-  #v(.4em)
+//   #v(.4em)
 
-  #mini-card([Broadcast-shaped solution], [
-    Send the whole matrix to every worker and let each worker discard the irrelevant rows.
-  ], color: orange)
+//   #mini-card([Broadcast-shaped solution], [
+//     Send the whole matrix to every worker and let each worker discard the irrelevant rows.
+//   ], color: orange)
 
-  #mini-card([Selective-shaped solution], [
-    Send each worker exactly the block it needs, then collect the partial results.
-  ], color: green)
-][
-  #placeholder(
-    [Architecture sketch],
-    body: [Master, workers, and per-worker row partitions]
-  )
-]
+//   #mini-card([Selective-shaped solution], [
+//     Send each worker exactly the block it needs, then collect the partial results.
+//   ], color: green)
+// ][
+//   #placeholder(
+//     [Architecture sketch],
+//     body: [Master, workers, and per-worker row partitions]
+//   )
+// ]
 
 
 == What Existing DSLs Give Us
+
+#let scalatropy-column-fill = orange.lighten(91%)
+#let scalatropy-column-soft-fill = orange.lighten(87%)
+#let scalatropy-column-header(body) = table.cell(
+  fill: orange,
+  align: center + horizon,
+  inset: (x: .55em, y: .45em),
+)[#text(fill: white, weight: "medium", size: .78em)[#body]]
 
 #block(
   width: 100%,
@@ -162,38 +161,38 @@
   stroke: (paint: ink.lighten(72%), thickness: .7pt),
 )[
   #table(
-    columns: (1.65fr, 1fr, 1.08fr, 1.08fr, 1fr),
+    columns: (2.3fr, 1fr, 1.08fr, 1.08fr, 1fr),
     gutter: .08em,
     stroke: none,
     comparison-header[Communication],
     comparison-header[HasChor],
     comparison-header[CloudChor],
     comparison-header[ScalaLoci],
-    comparison-header[ScalaTropy],
+    scalatropy-column-header[ScalaTropy],
 
     comparison-label[Point-to-point],
     comparison-cell[#support-chip("native")],
     comparison-cell[#support-chip("native")],
     comparison-cell[#support-chip("native")],
-    comparison-cell[#support-chip("native")],
+    comparison-cell(fill: scalatropy-column-fill)[#support-chip("native")],
 
-    comparison-label([Isotropic], fill: soft),
+    comparison-label([Fan-out (Isotropic)], fill: soft),
     comparison-cell(fill: soft)[#support-chip("absent")],
     comparison-cell(fill: soft)[#support-chip("native")],
     comparison-cell(fill: soft)[#support-chip("native")],
-    comparison-cell(fill: soft)[#support-chip("native")],
+    comparison-cell(fill: scalatropy-column-soft-fill)[#support-chip("native")],
 
-    comparison-label[Anisotropic],
+    comparison-label[Selective Fan-out (Anisotropic)],
     comparison-cell[#support-chip("absent")],
     comparison-cell[#support-chip("native")],
     comparison-cell[#support-chip("pattern")],
-    comparison-cell[#support-chip("native")],
+    comparison-cell(fill: scalatropy-column-fill)[#support-chip("native")],
 
-    comparison-label([Co-anisotropic], fill: soft),
+    comparison-label([Selective Fan-in (Co-anisotropic)], fill: soft),
     comparison-cell(fill: soft)[#support-chip("absent")],
     comparison-cell(fill: soft)[#support-chip("native")],
     comparison-cell(fill: soft)[#support-chip("pattern")],
-    comparison-cell(fill: soft)[#support-chip("native")],
+    comparison-cell(fill: scalatropy-column-soft-fill)[#support-chip("native")],
   )
 ]
 
@@ -203,6 +202,8 @@
     `pattern` = expressible, but not as a dedicated first-class primitive.
   ]
 ]
+
+#bold[CloudChor] supports a similar set of communication patterns, but has not architectural constraints enforcement.
 
 // #v(.4em)
 // #statement(fill: soft)[
@@ -489,20 +490,22 @@ trait Environment[F[_], LP <: Peer]:
 
 #pagebreak()
 
+#let point(color, body) = text(fill: color.darken(8%), weight: "medium")[#body]
+
 #table(
   columns: (auto, 1fr),
   column-gutter: .8em,
   row-gutter: .45em,
   stroke: none,
   align: (right + horizon, left + horizon),
-  [#chip[```scala MultiParty[F]```]],
-  [Defines programs once, abstracting over the effect that will interpret distributed computation.],
-  [#chip[```scala F[_]```]],
-  [Can be production `IO`, an in-memory test effect, or another monadic stack.],
-  [#chip[```scala Network```]],
-  [Provides the concrete transport operations: send, receive, and discover reachable peers.],
-  [#chip[```scala Environment```]],
-  [Provides the local peer context used to run placed computations at the current location.],
+  [#chip(fill: orange.lighten(85%), stroke: orange.lighten(40%))[```scala MultiParty[F]```]],
+  [#point(orange)[Defines programs once], abstracting over the effect that will interpret distributed computation.],
+  [#chip(fill: green.lighten(88%), stroke: green.lighten(35%))[```scala F[_]```]],
+  [Can be #point(green)[production `IO`, in-memory tests, or another monadic stack].],
+  [#chip(fill: blue.lighten(88%), stroke: blue.lighten(38%))[```scala Network```]],
+  [Provides the concrete #point(blue)[transport operations]: send, receive, and discover reachable peers.],
+  [#chip(fill: orange.lighten(90%), stroke: orange.lighten(48%))[```scala Environment```]],
+  [Provides the #point(orange)[local peer context] used to run placed computations at the current location.],
 )
 
 = ScalaTropy in Practice
@@ -613,46 +616,136 @@ trait Environment[F[_], LP <: Peer]:
 
 == What ScalaTropy Contributes
 
+#let contribution-point(title, body, color) = block(width: 100%, inset: (x: .1em, y: .32em))[
+  #table(
+    columns: (.18em, 1fr),
+    column-gutter: .58em,
+    stroke: none,
+    align: (center + horizon, left + horizon),
+    [#box(width: .18em, height: 4em, fill: color, radius: 1pt)],
+    [
+      #text(weight: "medium", fill: color.darken(12%))[#title]
+      #linebreak()
+      #text(fill: ink)[#body]
+    ],
+  )
+]
+
 #components.side-by-side(columns: (1fr, 1fr), gutter: 1em)[
-  #mini-card([Unified design], [
+  #contribution-point([Unified design], [
     Choreographic global specification with type-level architecture.
-  ], color: blue)
+  ], blue)
 
-  #mini-card([Differentiated communication], [
+  #v(.55em)
+
+  #contribution-point([Differentiated communication], [
     Point-to-point, isotropic, anisotropic, and co-anisotropic primitives.
-  ], color: orange)
+  ], orange)
 ][
-  #mini-card([Architectural enforcement], [
+  #contribution-point([Architectural enforcement], [
     Invalid peer interactions are rejected by Scala's type system.
-  ], color: green)
+  ], green)
 
-  #mini-card([Monadic implementation], [
+  #v(.55em)
+
+  #contribution-point([Monadic implementation], [
     Tagless-final encoding separates the DSL from concrete execution effects.
-  ], color: blue)
+  ], blue)
 ]
 
 == Future Work
 
-- Formal semantics for the core language.
-- Type safety and deadlock-freedom results in the style of choreographic programming.
-- Architectural compliance and communication correctness for the ScalaLoci-inspired layer.
-- Explore whether existing choreographic languages can benefit from runtime role-instance information.
-
-#v(.65em)
-#statement(fill: orange.lighten(88%))[
-  The broader question: how much architecture should a choreography know?
+#let future-work-item(index, title, body, color) = block(width: 100%, inset: (x: .1em, y: .3em))[
+  #table(
+    columns: (auto, 1fr),
+    column-gutter: .62em,
+    stroke: none,
+    align: (center + horizon, left + horizon),
+    [
+      #box(
+        width: 2.05em,
+        height: 2.05em,
+        radius: 50%,
+        fill: color.lighten(86%),
+        stroke: (paint: color.lighten(38%), thickness: .7pt),
+      )[
+        #align(center + horizon)[#text(size: .7em, weight: "medium", fill: color.darken(14%))[#index]]
+      ]
+    ],
+    [
+      #text(weight: "medium", fill: color.darken(12%))[#title]
+      #linebreak()
+      #text(size: .85em, fill: ink)[#body]
+    ],
+  )
 ]
+
+#components.side-by-side(columns: (1fr, 1fr), gutter: 1.1em)[
+  #future-work-item([1], [Core semantics], [
+    Formalize the core language and the meaning of each communication primitive.
+  ], blue)
+
+  #v(.45em)
+
+  #future-work-item([2], [Deployment guarantees], [
+    Carry the type-level safety guarantees into deployment descriptors and runtime configuration.
+  ], green)
+][
+  #future-work-item([3], [Peer Subtyping and Enclaves], [
+    Study how refined peer definitions (via subtyping) relate to enclaves without adding additional primitives.
+  ], orange)
+
+  #v(.45em)
+
+  #future-work-item([4], [Evaluation], [
+    Extend the evidence with more case studies, benchmarks, and overhead measurements.
+  ], blue)
+]
+
 
 == Thank You
 
-#align(center + horizon)[
-  Questions?
+#let artifact-url = "https://github.com/nicolasfara/scalatropy"
 
-  // #v(.6em)
-  // #statement[
-  //   ScalaTropy: multiparty coordination where the communication shape is part of the type story.
-  // ]
+#slide(composer: (1.08fr, .92fr))[
+  #align(left + horizon)[
+    #text(size: 2.1em, weight: "medium", fill: ink)[Questions?]
 
-  #v(.6em)
-  #text(size: .85em, fill: ink.lighten(25%))[Artifact: github.com/nicolasfara/scalatropy]
+    // #v(.35em)
+
+    // #text(size: .95em, fill: ink.lighten(18%))[
+    //   ScalaTropy: multiparty coordination where communication shape is part of the type story.
+    // ]
+
+    // #v(.9em)
+
+    #block(
+      width: 88%,
+      inset: (x: .8em, y: .55em),
+      radius: 5pt,
+      fill: orange.lighten(91%),
+      stroke: (paint: orange.lighten(42%), thickness: .7pt),
+    )[
+      #text(size: .66em, weight: "medium", fill: orange.darken(12%))[Artifact]
+      #linebreak()
+      #text(size: .82em, fill: ink)[#link(artifact-url)[#fa-github() github.com/nicolasfara/scalatropy]]
+    ]
+  ]
+][
+  #align(center + horizon)[
+    #block(
+      inset: .58em,
+      radius: 6pt,
+      fill: white,
+      stroke: (paint: ink.lighten(70%), thickness: .8pt),
+    )[
+      #tiaoma.qrcode(artifact-url, width: 6cm)
+    ]
+
+    #v(.35em)
+
+    #text(size: .68em, weight: "medium", fill: ink.lighten(28%))[
+      Feel free to check out the code, try it out, and reach out with questions or feedback!
+    ]
+  ]
 ]

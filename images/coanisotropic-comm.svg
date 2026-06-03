@@ -7,7 +7,7 @@
    viewBox="0 0 39.687499 26.458333"
    version="1.1"
    id="svg1"
-   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
    sodipodi:docname="coanisotropic-comm.svg"
    inkscape:export-filename="coanisotropic-comm.pdf"
    inkscape:export-xdpi="96"
@@ -27,10 +27,10 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="7.2954052"
-     inkscape:cx="82.037938"
-     inkscape:cy="33.308637"
-     inkscape:window-width="2259"
-     inkscape:window-height="1193"
+     inkscape:cx="98.555184"
+     inkscape:cy="33.2401"
+     inkscape:window-width="3440"
+     inkscape:window-height="1358"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -141,7 +141,9 @@
                id="tspan1"
                style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c575f;fill-opacity:1;stroke:none;stroke-width:0.265"
                x="-18.182726"
-               y="-19.30003">$m_1$</tspan></text><text
+               y="-19.30003">m<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan2">1</tspan></tspan></text><text
              xml:space="preserve"
              style="font-size:4.9389px;line-height:1;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#2c575f;stroke:#23373b;stroke-width:0.264999;stroke-linejoin:round"
              x="-20.72714"
@@ -152,7 +154,9 @@
                id="tspan1-6"
                style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c575f;fill-opacity:1;stroke:none;stroke-width:0.265"
                x="-20.72714"
-               y="-14.361794">$m_2$</tspan></text><text
+               y="-14.361794">m<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan3">2</tspan></tspan></text><text
              xml:space="preserve"
              style="font-size:4.9389px;line-height:1;font-family:Sans;-inkscape-font-specification:'Sans, Normal';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#2c575f;stroke:#23373b;stroke-width:0.264999;stroke-linejoin:round"
              x="-18.515045"
@@ -163,6 +167,8 @@
                id="tspan1-6-7"
                style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c575f;fill-opacity:1;stroke:none;stroke-width:0.265"
                x="-18.515045"
-               y="-5.7074594">$m_i$</tspan></text></g></g></g><g
+               y="-5.7074594">m<tspan
+   style="font-size:65%;baseline-shift:sub"
+   id="tspan4">i</tspan></tspan></text></g></g></g><g
        id="g2-7"
        transform="matrix(0.5,0,0,0.5,10.14214,16.402428)" /></g></svg>
