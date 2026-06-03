@@ -31,10 +31,16 @@ jobs:
           sudo apt-get install -y fonts-inter fonts-firacode
           wget https://github.com/FortAwesome/Font-Awesome/releases/download/6.4.2/fontawesome-free-6.4.2-desktop.zip
           wget https://github.com/bBoxType/FiraSans/archive/master.zip
+          wget https://github.com/firamath/firamath/releases/download/v0.3.4/FiraMath-Regular.otf
+          wget https://github.com/JetBrains/JetBrainsMono/releases/download/v2.304/JetBrainsMono-2.304.zip
           unzip fontawesome-free-6.4.2-desktop.zip
           unzip master.zip
+          unzip JetBrainsMono-2.304.zip
           sudo mv fontawesome-free-6.4.2-desktop /usr/share/fonts
           sudo mv FiraSans-master /usr/share/fonts
+          sudo mkdir -p /usr/share/fonts/firamath /usr/share/fonts/jetbrainsmono
+          sudo mv FiraMath-Regular.otf /usr/share/fonts/firamath
+          sudo mv fonts/ttf/*.ttf /usr/share/fonts/jetbrainsmono
           sudo fc-cache -fv
 
       - name: Set up Python
