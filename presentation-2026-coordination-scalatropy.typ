@@ -86,11 +86,11 @@
   === Choreographic programming
 
   - *Protocols definition* involving multiple participants; proved deadlock-free.
-  - *Explicit communication* as first-class primitives in the language.
+  - #text(fill: green.lighten(30%), weight: "bold")[Explicit communication] as first-class primitives in the language.
 ][
   === Multitier programming
 
-  - *Placement discipline* for values and computations across tiers.
+  - Placement discipline and #text(fill: green.lighten(30%), weight: "bold")[architectual constraints] among peers.
   - *Implicit communication* through cross-tier operators.
 ]
 
@@ -144,6 +144,31 @@
 //     body: [Master, workers, and per-worker row partitions]
 //   )
 // ]
+// 
+
+== Communication Primitives in Multiparty Languages
+
+#components.side-by-side(columns: (1fr, 1fr, 1fr, 1fr), gutter: .55em)[
+  #align(center)[#image("images/point-to-point.svg", width: 78%)]
+  #align(center)[#chip[point-to-point]]
+  #text(size: .67em)[Classic point-to-point with one sender, one receiver]
+][
+  #align(center)[#image("images/isotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[isotropic]]
+  #text(size: .67em)[same payload to many receivers]
+][
+  #align(center)[#image("images/anisotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[anisotropic]]
+  #text(size: .67em)[tailored payloads to many receivers]
+][
+  #align(center)[#image("images/coanisotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[co-anisotropic]]
+  #text(size: .67em)[many tailored payloads to one receiver]
+]
+
+#statement(fill: green.lighten(88%), stroke: green)[
+  The signatures carry both placement and architectural intent.
+]
 
 
 == Multiparty Languages Landscape
@@ -167,7 +192,7 @@
     columns: (2.3fr, 1fr, 1.08fr, 1.08fr, 1fr),
     gutter: .08em,
     stroke: none,
-    comparison-header[Communication],
+    comparison-header[Feature],
     comparison-header[HasChor],
     comparison-header[CloudChor],
     comparison-header[ScalaLoci],
@@ -381,7 +406,7 @@
 == Placement Types: Values Know Where They Live
 
 #statement[
-  The `V on P` notation can be read as: "_a value of type `V` owned by peer `P`_".
+  The ```scala V on P``` notation can be read as: "_a value of type ```scala V``` owned by peer ```scala P```_".
 ]
 
 #components.side-by-side(columns: (1fr, 1fr, 1fr), gutter: .7em)[
@@ -426,27 +451,7 @@ def take[P <: Peer, V](value: V on P)(using Label[P]): F[V]
 
 == The Language Surface: Communication
 
-#components.side-by-side(columns: (1fr, 1fr, 1fr, 1fr), gutter: .55em)[
-  #align(center)[#image("images/point-to-point.svg", width: 78%)]
-  #align(center)[#chip[point-to-point]]
-  #text(size: .67em)[Classic point-to-point with one sender, one receiver]
-][
-  #align(center)[#image("images/isotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[isotropic]]
-  #text(size: .67em)[same payload to many receivers]
-][
-  #align(center)[#image("images/anisotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[anisotropic]]
-  #text(size: .67em)[tailored payloads to many receivers]
-][
-  #align(center)[#image("images/coanisotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[co-anisotropic]]
-  #text(size: .67em)[many tailored payloads to one receiver]
-]
 
-#statement(fill: green.lighten(88%), stroke: green)[
-  The signatures carry both placement and architectural intent.
-]
 
 
 === Communication API
