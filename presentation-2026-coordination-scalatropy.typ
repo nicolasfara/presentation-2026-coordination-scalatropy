@@ -4,6 +4,7 @@
 #import "@preview/ctheorems:1.1.3": *
 #import "@preview/numbly:0.1.0": numbly
 #import "@preview/codly:1.3.0": *
+#import "@preview/cetz:0.4.2"
 #import "@preview/tiaoma:0.3.0"
 #import "utils.typ": *
 
@@ -77,7 +78,9 @@
 
 == Choreographic and Multitier Programming
 
-They share the goal of *describing distributed systems as a whole*, rather than as separate programs for each participant.
+#feature-block("Multiparty Languages")[
+  _Describe a distributed system and peers interactions as a #bold[single global program], projecting into the peers the specific logic they need to execute._
+]
 
 #components.side-by-side(columns: (1fr, 1fr), gutter: 1.5em)[
   === Choreographic programming
@@ -90,9 +93,9 @@ They share the goal of *describing distributed systems as a whole*, rather than 
   - *Placement discipline* for values and computations across tiers.
   - *Implicit communication* through cross-tier operators.
 ]
-#v(1em)
-#statement(fill: green.lighten(85%))[
-  Can we take the #underline[best of both worlds] and have a single multiparty language for distributed systems with *explicit communication* and *architectural constraints*?
+
+#statement(fill: gray.lighten(85%))[
+  Can we take the #underline[best of both worlds] and have a single multiparty language for distributed systems with #text(fill: green.lighten(30%))[explicit communication] and #text(fill: green.lighten(30%))[architectural constraints]?
 ]
 
 
@@ -143,7 +146,7 @@ They share the goal of *describing distributed systems as a whole*, rather than 
 // ]
 
 
-== What Existing DSLs Give Us
+== Multiparty Languages Landscape
 
 #let scalatropy-column-fill = orange.lighten(91%)
 #let scalatropy-column-soft-fill = orange.lighten(87%)
@@ -193,6 +196,12 @@ They share the goal of *describing distributed systems as a whole*, rather than 
     comparison-cell(fill: soft)[#support-chip("native")],
     comparison-cell(fill: soft)[#support-chip("pattern")],
     comparison-cell(fill: scalatropy-column-soft-fill)[#support-chip("native")],
+
+    comparison-label([#strong[Architectural Constraints]], fill: orange.lighten(86%)),
+    comparison-cell(fill: orange.lighten(86%))[#support-chip("absent")],
+    comparison-cell(fill: orange.lighten(86%))[#support-chip("absent")],
+    comparison-cell(fill: orange.lighten(86%))[#support-chip("native")],
+    comparison-cell(fill: orange.lighten(78%))[#support-chip("native")],
   )
 ]
 
@@ -203,7 +212,7 @@ They share the goal of *describing distributed systems as a whole*, rather than 
   ]
 ]
 
-#bold[CloudChor] supports a similar set of communication patterns, but has not architectural constraints enforcement.
+// #bold[CloudChor] supports a similar set of communication patterns, but has not architectural constraints enforcement.
 
 // #v(.4em)
 // #statement(fill: soft)[
@@ -212,7 +221,7 @@ They share the goal of *describing distributed systems as a whole*, rather than 
 
 = ScalaTropy
 
-== The Idea in One Line
+== The Idea in One Slide
 
 #slide(composer: (0.82fr, 1.18fr))[
 
@@ -317,6 +326,10 @@ They share the goal of *describing distributed systems as a whole*, rather than 
   }
   ```
 ][
+  #let peer-family-color = rgb("#7a5c9e")
+  #let ties-color = rgb("#0f766e")
+  #let guardrail-color = rgb("#b04a6f")
+
   #let architecture-row(label, color, body, fill: luma(252)) = (
     table.cell(
       fill: color.lighten(88%),
@@ -347,18 +360,18 @@ They share the goal of *describing distributed systems as a whole*, rather than 
       stroke: none,
       ..architecture-row(
         [Peer families],
-        blue,
+        peer-family-color,
         [Types name the classes of participants in the distributed system.],
       ),
       ..architecture-row(
         [Ties],
-        orange,
+        ties-color,
         [`Single[P]` and `Multiple[P]` describe admissible communication relationships.],
         fill: soft,
       ),
       ..architecture-row(
         [Compile-time guardrail],
-        green,
+        guardrail-color,
         [A primitive is callable only when its sender and receiver satisfy the required ties.],
       ),
     )
@@ -372,7 +385,7 @@ They share the goal of *describing distributed systems as a whole*, rather than 
 ]
 
 #components.side-by-side(columns: (1fr, 1fr, 1fr), gutter: .7em)[
-  #step-item([1], [place], [`on[P] { ... }` executes the body only at peers of type `P`.])
+  #step-item([1], [place], [```scala on[P] { ... }``` evaluates the body expression only at peers of type `P`.])
 ][
   #step-item([2], [reference], [Other peers retain a typed remote reference to the placed value.])
 ][
@@ -413,7 +426,30 @@ def take[P <: Peer, V](value: V on P)(using Label[P]): F[V]
 
 == The Language Surface: Communication
 
-=== Communication
+#components.side-by-side(columns: (1fr, 1fr, 1fr, 1fr), gutter: .55em)[
+  #align(center)[#image("images/point-to-point.svg", width: 78%)]
+  #align(center)[#chip[point-to-point]]
+  #text(size: .67em)[Classic point-to-point with one sender, one receiver]
+][
+  #align(center)[#image("images/isotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[isotropic]]
+  #text(size: .67em)[same payload to many receivers]
+][
+  #align(center)[#image("images/anisotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[anisotropic]]
+  #text(size: .67em)[tailored payloads to many receivers]
+][
+  #align(center)[#image("images/coanisotropic-comm.svg", width: 78%)]
+  #align(center)[#chip[co-anisotropic]]
+  #text(size: .67em)[many tailored payloads to one receiver]
+]
+
+#statement(fill: green.lighten(88%), stroke: green)[
+  The signatures carry both placement and architectural intent.
+]
+
+
+=== Communication API
 
 #codly(
   highlights: (
@@ -446,30 +482,10 @@ def coAnisotropicComm[From <: TiedWithSingle[To], To <: TiedWithMultiple[From], 
 ): F[Anisotropic[From, V] on To]
 ```
 
-#components.side-by-side(columns: (1fr, 1fr, 1fr, 1fr), gutter: .55em)[
-  #align(center)[#image("images/point-to-point.svg", width: 78%)]
-  #align(center)[#chip[point-to-point]]
-  #text(size: .67em)[Classic point-to-point with one sender, one receiver]
-][
-  #align(center)[#image("images/isotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[isotropic]]
-  #text(size: .67em)[same payload to many receivers]
-][
-  #align(center)[#image("images/anisotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[anisotropic]]
-  #text(size: .67em)[tailored payloads to many receivers]
-][
-  #align(center)[#image("images/coanisotropic-comm.svg", width: 78%)]
-  #align(center)[#chip[co-anisotropic]]
-  #text(size: .67em)[many tailored payloads to one receiver]
-]
-
-#statement(fill: green.lighten(88%), stroke: green)[
-  The signatures carry both placement and architectural intent.
-]
 
 == Tagless-final Encoding
 
+#components.side-by-side(columns: (2fr, 1fr))[
 === Effect-polymorphic interpretation
 
 ```scala
@@ -487,6 +503,68 @@ trait Environment[F[_], LP <: Peer]:
   def self: F[Address[LP]]
   def local[P <: Peer, V](body: Label[P] ?=> F[V]): F[V]
 ```
+][
+  #align(center + horizon)[
+    #cetz.canvas(length: 1.5cm, {
+      import cetz.draw: *
+
+      let node(pos, width, height, title, subtitle, color) = {
+        let (x, y) = pos
+        rect(
+          (x - width / 2, y - height / 2),
+          (x + width / 2, y + height / 2),
+          radius: .08,
+          fill: color.lighten(90%),
+          stroke: (paint: color.lighten(35%), thickness: .8pt),
+        )
+        content(
+          pos,
+          align(center)[
+            #text(size: .65em, weight: "medium", fill: color.darken(13%))[#title]
+            #linebreak()
+            #text(size: .45em, fill: ink.lighten(18%))[#subtitle]
+          ],
+          anchor: "center",
+        )
+      }
+
+      circle(
+        (0, -.05),
+        radius: 2.85,
+        fill: ink.lighten(96%),
+        stroke: (paint: blue.lighten(55%), thickness: .8pt),
+      )
+      content(
+        (0, 2.7),
+        box(
+          inset: (x: .35em, y: .12em),
+          fill: blue.lighten(96%),
+          text(size: .6em, weight: "medium", fill: blue.darken(10%))[#raw("F[_]")],
+        ),
+        anchor: "center",
+      )
+
+      line(
+        (0, .95),
+        (-1.45, -.7),
+        stroke: (paint: ink.lighten(40%), thickness: .85pt),
+        mark: (end: ">"),
+      )
+      line(
+        (0, .95),
+        (1.45, -.7),
+        stroke: (paint: ink.lighten(40%), thickness: .85pt),
+        mark: (end: ">"),
+      )
+      content((-1.05, .2), text(size: .5em, fill: ink.lighten(22%))[uses], anchor: "center")
+      content((1.05, .2), text(size: .5em, fill: ink.lighten(22%))[uses], anchor: "center")
+
+      node((0, 1.45), 2.45, .85, [MultiParty], [program API], orange)
+      node((-1.55, -1.25), 2.2, .8, [Network], [transport], blue)
+      node((1.55, -1.25), 2.2, .8, [Environment], [local peer], green)
+    })
+  ]
+]
 
 #pagebreak()
 

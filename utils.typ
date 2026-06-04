@@ -155,11 +155,16 @@
 )
 
 #let step-item(n, label, body) = block(width: 100%)[
-  #chip(n, fill: ink.lighten(88%), stroke: ink.lighten(58%))
-  #h(.35em)
-  #text(size: .76em, weight: "medium", fill: ink)[#label]
-  #v(.2em)
-  #text(size: .69em, fill: ink.lighten(12%))[#body]
+  #grid(
+    columns: (auto, 1fr),
+    column-gutter: .45em,
+    row-gutter: .5em,
+    align: (center + horizon, left + horizon),
+    chip(n, fill: ink.lighten(88%), stroke: ink.lighten(58%)),
+    text(size: 0.95em, weight: "medium", fill: ink)[#label],
+    [],
+    text(size: .8em, fill: ink.lighten(12%))[#body],
+  )
 ]
 
 #let support-chip(kind) = {
