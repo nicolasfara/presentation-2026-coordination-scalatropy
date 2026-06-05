@@ -166,9 +166,9 @@
   #text(size: .67em)[many tailored payloads to one receiver]
 ]
 
-#statement(fill: green.lighten(88%), stroke: green)[
-  The signatures carry both placement and architectural intent.
-]
+// #statement(fill: green.lighten(88%), stroke: green)[
+//   The signatures carry both placement and architectural intent.
+// ]
 
 
 == Multiparty Languages Landscape
@@ -596,15 +596,15 @@ trait Environment[F[_], LP <: Peer]:
 
 #slide(composer: (.70fr, 1.30fr))[
   #mini-card([Architecture], [
-    `Master` is tied to multiple `Worker`s; every `Worker` is tied to one `Master`.
+    ```scala Master``` is tied to multiple ```scala Worker```s; every ```scala Worker``` is tied to one ```scala Master```.
   ], color: blue)
 
   #mini-card([Scatter], [
-    `anisotropicComm` sends a distinct task to each worker.
+    ```scala anisotropicComm``` sends a distinct task to each worker.
   ], color: orange)
 
   #mini-card([Gather], [
-    `coAnisotropicComm` collects partial results and acts as a barrier.
+    ```scala coAnisotropicComm``` collects partial results and acts as a barrier.
   ], color: green)
 ][
   #codly(
@@ -681,17 +681,66 @@ trait Environment[F[_], LP <: Peer]:
 
 == Communication Overhead
 
-#slide(composer: (1.1fr, .9fr))[
-  #align(center)[
-    #image("images/communication-overhead.png", width: 98%)
+#let overhead-point(label, body, color) = block(width: 100%, inset: (x: .12em, y: .2em))[
+  #table(
+    columns: (.22em, 1fr),
+    column-gutter: .5em,
+    stroke: none,
+    align: (center + horizon, left + horizon),
+    [#box(width: .22em, height: 2.2em, radius: 1.5pt, fill: color)],
+    [
+      #text(size: .68em, weight: "medium", fill: color.darken(12%))[#label]
+      #linebreak()
+      #text(size: .64em, fill: ink)[#body]
+    ],
+  )
+]
+
+#slide(composer: (1.13fr, .87fr))[
+  
+  #align(center + horizon)[
+    #block(
+      width: 98%,
+      inset: .35em,
+      radius: 6pt,
+      fill: white,
+      stroke: (paint: ink.lighten(70%), thickness: .8pt),
+    )[
+      #chip([Matrix-vector product], fill: ink.lighten(88%), stroke: ink.lighten(55%))
+      #image("images/communication-overhead.png", width: 100%)
+    ]
   ]
 ][
-  #text(weight: "medium")[Matrix-vector product]
+  #align(left + horizon)[
 
-  - Broadcast sends the full matrix to every worker.
-  - Anisotropic communication sends each worker its row block.
-  - For a 50 x 50 matrix, broadcast grows linearly with the number of workers.
-  - Selective communication stays almost flat, apart from metadata and vector distribution.
+    #text(size: .94em, weight: "medium", fill: ink)[
+      Selective communication keeps the payload local
+    ]
+
+    #v(.2em)
+
+    #overhead-point([Broadcast], [
+      Sends the #text(fill: red)[full matrix] to every worker, so traffic grows with the number of peers.
+    ], red)
+
+    #overhead-point([Anisotropic], [
+      Sends #text(fill: green)[each worker] only its row block; the shared vector and metadata dominate.
+    ], green)
+
+    #v(.14em)
+
+    #block(
+      width: 100%,
+      inset: (x: .65em, y: .38em),
+      radius: 5pt,
+      fill: green.lighten(90%),
+      stroke: (paint: green.lighten(35%), thickness: .8pt),
+    )[
+      #text(size: .66em, weight: "medium", fill: ink)[
+        50 x 50 matrix: linear broadcast growth vs. an almost flat selective curve.
+      ]
+    ]
+  ]
 ]
 
 = Takeaways
