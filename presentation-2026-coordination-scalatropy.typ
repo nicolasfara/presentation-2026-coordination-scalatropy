@@ -460,12 +460,12 @@ def take[P <: Peer, V](value: V on P)(using Label[P]): F[V]
   highlights: (
     (line: 2, start: 18, end: 31, fill: blue),
     (line: 2, start: 44, end: 57, fill: blue),
-    (line: 6, start: 27, end: 42, fill: blue),
+    (line: 6, start: 27, end: 42, fill: orange),
     (line: 6, start: 55, end: 68, fill: blue),
-    (line: 10, start: 29, end: 44, fill: blue),
+    (line: 10, start: 29, end: 44, fill: orange),
     (line: 10, start: 57, end: 70, fill: blue),
     (line: 14, start: 31, end: 44, fill: blue),
-    (line: 14, start: 57, end: 72, fill: blue),
+    (line: 14, start: 57, end: 72, fill: orange),
   )
 )
 ```scala
