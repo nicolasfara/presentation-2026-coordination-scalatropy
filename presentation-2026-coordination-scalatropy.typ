@@ -204,19 +204,19 @@
     comparison-cell[#support-chip("native")],
     comparison-cell(fill: scalatropy-column-fill)[#support-chip("native")],
 
-    comparison-label([Fan-out (Isotropic)], fill: soft),
+    comparison-label([Broadcast (_Isotropic_)], fill: soft),
     comparison-cell(fill: soft)[#support-chip("absent")],
     comparison-cell(fill: soft)[#support-chip("native")],
     comparison-cell(fill: soft)[#support-chip("native")],
     comparison-cell(fill: scalatropy-column-soft-fill)[#support-chip("native")],
 
-    comparison-label[Selective Fan-out (Anisotropic)],
+    comparison-label[Scatter (_Anisotropic_)],
     comparison-cell[#support-chip("absent")],
     comparison-cell[#support-chip("native")],
     comparison-cell[#support-chip("pattern")],
     comparison-cell(fill: scalatropy-column-fill)[#support-chip("native")],
 
-    comparison-label([Selective Fan-in (Co-anisotropic)], fill: soft),
+    comparison-label([Gather (_Co-anisotropic_)], fill: soft),
     comparison-cell(fill: soft)[#support-chip("absent")],
     comparison-cell(fill: soft)[#support-chip("native")],
     comparison-cell(fill: soft)[#support-chip("pattern")],
@@ -497,7 +497,7 @@ def coAnisotropicComm[From <: TiedWithSingle[To], To <: TiedWithMultiple[From], 
 trait MultiParty[F[_]: Monad]:
   def on[P <: Peer, V](...): F[V on P]
   def comm[S, R, V](value: V on S): F[V on R]
-  // ...
+  // ... other primitives
 
 trait Network[F[_], LP <: Peer]:
   def send[V, To <: Peer](...): F[Unit]
@@ -505,8 +505,7 @@ trait Network[F[_], LP <: Peer]:
   def alivePeersOf[P <: Peer]: F[NonEmptyList[Address[P]]]
 
 trait Environment[F[_], LP <: Peer]:
-  def self: F[Address[LP]]
-  def local[P <: Peer, V](body: Label[P] ?=> F[V]): F[V]
+  def provide(peerTag: PeerTag[?]): F[Reference]
 ```
 ][
   #align(center + horizon)[
