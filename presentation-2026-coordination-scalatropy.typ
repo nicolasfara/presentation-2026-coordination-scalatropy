@@ -713,11 +713,9 @@ trait Environment[F[_], LP <: Peer]:
 ][
   #align(left + horizon)[
 
-    #text(size: .94em, weight: "medium", fill: ink)[
-      Selective communication keeps the payload local
-    ]
+    === Selective communication keeps the payload local
+    
 
-    #v(.2em)
 
     #overhead-point([Broadcast], [
       Sends the #text(fill: red)[full matrix] to every worker, so traffic grows with the number of peers.
