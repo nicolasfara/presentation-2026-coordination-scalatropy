@@ -954,33 +954,40 @@ yield ()
 
     // #v(.9em)
 
-    #block(
-      width: 88%,
-      inset: (x: .8em, y: .55em),
-      radius: 5pt,
-      fill: orange.lighten(91%),
-      stroke: (paint: orange.lighten(42%), thickness: .7pt),
-    )[
-      #text(size: .66em, weight: "medium", fill: orange.darken(12%))[Artifact]
-      #linebreak()
-      #text(size: .82em, fill: ink)[#link(artifact-url)[#fa-github() github.com/nicolasfara/scalatropy]]
+    // #block(
+    //   width: 88%,
+    //   inset: (x: .8em, y: .55em),
+    //   radius: 5pt,
+    //   fill: orange.lighten(91%),
+    //   stroke: (paint: orange.lighten(42%), thickness: .7pt),
+    // )[
+    //   #text(size: .66em, weight: "medium", fill: orange.darken(12%))[Artifact]
+    //   #linebreak()
+    //   #text(size: .82em, fill: ink)[#link(artifact-url)[#fa-github() github.com/nicolasfara/scalatropy]]
+    // ]
+
+    #text(weight: "medium", fill: ink.lighten(28%))[
+      Feel free to check out the code, try it out, and reach out with questions or feedback!
     ]
   ]
 ][
   #align(center + horizon)[
     #block(
-      inset: .58em,
+      inset: 1em,
       radius: 6pt,
       fill: white,
       stroke: (paint: ink.lighten(70%), thickness: .8pt),
     )[
       #tiaoma.qrcode(artifact-url, width: 6cm)
-    ]
-
-    #v(.35em)
-
-    #text(size: .68em, weight: "medium", fill: ink.lighten(28%))[
-      Feel free to check out the code, try it out, and reach out with questions or feedback!
+      #link("https://doi.org/10.5281/zenodo.19407062", "10.5281/zenodo.19407062")
+      #block(width: 70%)[
+        #grid(
+          columns: (1fr, 1fr),
+          inset: 0.5em,
+          image("images/available.png", width: 100%, fit: "contain"),
+          image("images/functional.png", width: 100%, fit: "contain")
+        )
+      ]
     ]
   ]
 ]
