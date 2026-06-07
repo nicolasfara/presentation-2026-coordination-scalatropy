@@ -31,7 +31,7 @@
     preamble: {
       codly(
         languages: (
-          scala: (name: [Scala], color: blue),
+          scala: (name: [Scala]),
         ),
         display-icon: false,
         display-name: false,
@@ -87,11 +87,13 @@
 
   - *Protocols definition* involving multiple participants; proved deadlock-free.
   - #text(fill: green.lighten(30%), weight: "bold")[Explicit communication] as first-class primitives in the language.
+  - #bold[Languages:] Choral, HasChor @haschor2023. //, Choral, Pirouette.
 ][
   === Multitier programming
 
   - Placement discipline and #text(fill: green.lighten(30%), weight: "bold")[architectual constraints] among peers.
   - *Implicit communication* through cross-tier operators.
+  - #bold[Languages:] ScalaLoci @scalaloci2018, Eliom, Links.
 ]
 
 #statement(fill: gray.lighten(85%))[
@@ -488,6 +490,40 @@ def coAnisotropicComm[From <: TiedWithSingle[To], To <: TiedWithMultiple[From], 
 ```
 
 
+== Scala and Monads
+
+#v(1em)
+
+#components.side-by-side(columns: (1fr, 1fr), gutter: 1.5em)[
+  #styled-block(
+    [Why Scala?],
+    [
+      #v(0.5em)
+      - #text(fill: blue.lighten(10%), weight: "bold")[Advanced type system] to elegantly encode architectural constraints (```scala Type <: { ... }```).
+      - #text(weight: "bold")[Given/using clauses] (context parameters) to transparently pass placement evidence.
+      - #text(weight: "bold")[Flexible syntax] for embedded DSLs (e.g., ```scala on[P] { ... }```).
+    ],
+    icon: fa-code() + " ",
+    fill-color: blue.lighten(90%),
+    stroke-color: blue.lighten(40%),
+    title-color: blue.darken(20%),
+  )
+][
+  #styled-block(
+    [Why Monads?],
+    [
+      #v(0.5em)
+      - ```scala F[_]: Monad``` abstracts the side-effect of distribution (e.g., ```scala IO```, ```scala Future```, or ```scala Id```).
+      - ```scala for```-comprehensions provide a clean, sequential syntax.
+      - Enables a #text(fill: green.lighten(10%), weight: "bold")[Tagless-final style] to isolate the multiparty choreography from the network.
+    ],
+    icon: fa-cogs() + " ",
+    fill-color: green.lighten(90%),
+    stroke-color: green.lighten(40%),
+    title-color: green.darken(20%),
+  )
+]
+
 == Tagless-final Encoding
 
 #components.side-by-side(columns: (2fr, 1fr))[
@@ -589,6 +625,76 @@ trait Environment[F[_], LP <: Peer]:
   [#chip(fill: orange.lighten(90%), stroke: orange.lighten(48%))[```scala Environment```]],
   [Provides the #point(orange)[local peer context] used to run placed computations at the current location.],
 )
+
+== Compiler Checks and Guarantees
+```scala
+type Server <: { type Tie <: Single[Database] & Multiple[Client] }
+type Database <: { type Tie <: Single[Server] }
+type Client <: { type Tie <: Single[Server] }
+```
+#components.side-by-side(columns: (1fr, 1fr), gutter: 1em)[
+  === Architecture violation
+  #codly(
+    highlights: (
+      (line: 3, start: 11, end: 50, fill: red),
+    )
+  )
+  ```scala
+  for
+    q <- on[Database] { query() }
+    leak <- isotropicComm[Database, Client](q)
+  yield ()
+  ```
+][
+  === Cardinality violation
+  #codly(
+    highlights: (
+      (line: 3, start: 14, end: 50, fill: red),
+    )
+  )
+  ```scala
+  for
+    value <- on[Client] { compute() }
+    invalid <- comm[Client, Server](value)
+  yield ()
+  ```
+]
+
+#components.side-by-side(columns: (1fr, 1fr))[
+=== Invalid placed value access
+
+#codly(
+    highlights: (
+      (line: 3, start: 27, end: 37, fill: red),
+    )
+  )
+```scala
+for
+  value <- on[Client] { compute() }
+  invalid <- on[Server] { take(value) }
+yield ()
+```
+][
+=== Scope violation
+
+#codly(
+    highlights: (
+      (line: 3, start: 13, end: 37, fill: red),
+    )
+  )
+```scala
+for
+  value <- on[Client] { compute() }
+  invalid = take(value)
+yield ()
+```
+]
+
+- All the static checks are implemented *plainly in the Scala type system*, without #underline[macros] or #underline[compiler plugins].
+- #underline[Peers] and #underline[scoping discipline] will be *ereased at runtime*, so there is *no overhead* for the checks.
+#statement(fill: green.lighten(88%), stroke: green)[
+  If the choreography compiles, the message exchange pattern perfectly adheres to the structural constraints of the distributed system.
+]
 
 = ScalaTropy in Practice
 
