@@ -979,7 +979,6 @@ yield ()
       stroke: (paint: ink.lighten(70%), thickness: .8pt),
     )[
       #tiaoma.qrcode(artifact-url, width: 6cm)
-      #link("https://doi.org/10.5281/zenodo.19407062", "10.5281/zenodo.19407062")
       #block(width: 70%)[
         #grid(
           columns: (1fr, 1fr),
@@ -988,6 +987,7 @@ yield ()
           image("images/functional.png", width: 100%, fit: "contain")
         )
       ]
+      #link("https://doi.org/10.5281/zenodo.19407062", "10.5281/zenodo.19407062")
     ]
   ]
 ]
