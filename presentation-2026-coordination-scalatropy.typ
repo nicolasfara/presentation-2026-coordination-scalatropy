@@ -58,7 +58,7 @@
       )
     ),
     date: datetime.today().display("[day] [month repr:long] [year]"),
-    institution: [University of Bologna],
+    // institution: [University of Bologna],
   ),
 )
 
