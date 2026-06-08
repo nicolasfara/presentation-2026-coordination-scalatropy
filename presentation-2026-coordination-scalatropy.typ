@@ -248,6 +248,40 @@
 
 = ScalaTropy
 
+== Scala and Monads
+
+#v(1em)
+
+#components.side-by-side(columns: (1fr, 1fr), gutter: 1.5em)[
+  #styled-block(
+    [Why Scala?],
+    [
+      #v(0.5em)
+      - #text(fill: blue.lighten(10%), weight: "bold")[Advanced type system] to elegantly encode architectural constraints (```scala Type <: { ... }```).
+      - #text(weight: "bold")[Given/using clauses] (context parameters) to transparently pass placement evidence.
+      - #text(weight: "bold")[Flexible syntax] for embedded DSLs (e.g., ```scala on[P] { ... }```).
+    ],
+    icon: fa-code() + " ",
+    fill-color: blue.lighten(90%),
+    stroke-color: blue.lighten(40%),
+    title-color: blue.darken(20%),
+  )
+][
+  #styled-block(
+    [Why Monads?],
+    [
+      #v(0.5em)
+      - ```scala F[_]: Monad``` abstracts the side-effect of distribution (e.g., ```scala IO```, ```scala Future```, or ```scala Id```).
+      - ```scala for```-comprehensions provide a clean, sequential syntax.
+      - Enables a #text(fill: green.lighten(10%), weight: "bold")[Tagless-final style] to isolate the multiparty choreography from the network.
+    ],
+    icon: fa-cogs() + " ",
+    fill-color: green.lighten(90%),
+    stroke-color: green.lighten(40%),
+    title-color: green.darken(20%),
+  )
+]
+
 == The Idea in One Slide
 
 #slide(composer: (0.82fr, 1.18fr))[
@@ -488,41 +522,6 @@ def coAnisotropicComm[From <: TiedWithSingle[To], To <: TiedWithMultiple[From], 
   value: V on From
 ): F[Anisotropic[From, V] on To]
 ```
-
-
-== Scala and Monads
-
-#v(1em)
-
-#components.side-by-side(columns: (1fr, 1fr), gutter: 1.5em)[
-  #styled-block(
-    [Why Scala?],
-    [
-      #v(0.5em)
-      - #text(fill: blue.lighten(10%), weight: "bold")[Advanced type system] to elegantly encode architectural constraints (```scala Type <: { ... }```).
-      - #text(weight: "bold")[Given/using clauses] (context parameters) to transparently pass placement evidence.
-      - #text(weight: "bold")[Flexible syntax] for embedded DSLs (e.g., ```scala on[P] { ... }```).
-    ],
-    icon: fa-code() + " ",
-    fill-color: blue.lighten(90%),
-    stroke-color: blue.lighten(40%),
-    title-color: blue.darken(20%),
-  )
-][
-  #styled-block(
-    [Why Monads?],
-    [
-      #v(0.5em)
-      - ```scala F[_]: Monad``` abstracts the side-effect of distribution (e.g., ```scala IO```, ```scala Future```, or ```scala Id```).
-      - ```scala for```-comprehensions provide a clean, sequential syntax.
-      - Enables a #text(fill: green.lighten(10%), weight: "bold")[Tagless-final style] to isolate the multiparty choreography from the network.
-    ],
-    icon: fa-cogs() + " ",
-    fill-color: green.lighten(90%),
-    stroke-color: green.lighten(40%),
-    title-color: green.darken(20%),
-  )
-]
 
 == Tagless-final Encoding
 
